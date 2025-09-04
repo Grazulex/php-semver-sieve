@@ -20,21 +20,18 @@ use Grazulex\SemverSieve\ValueObjects\ParsedVersion;
  */
 final class Sieve
 {
-    private readonly VersionComparatorInterface $comparator;
-
     private readonly RangeEvaluator $evaluator;
 
     /**
      * @param DialectInterface $dialect The version dialect to use for parsing
      * @param SieveConfiguration|null $configuration Configuration options
-     * @param VersionComparatorInterface|null $comparator Custom version comparator
+     * @param VersionComparatorInterface $comparator Custom version comparator
      */
     public function __construct(
         private readonly DialectInterface $dialect,
         private readonly ?SieveConfiguration $configuration = null,
-        ?VersionComparatorInterface $comparator = null,
+        private readonly VersionComparatorInterface $comparator = new SemverComparator(),
     ) {
-        $this->comparator = $comparator ?? new SemverComparator();
         $this->evaluator = new RangeEvaluator($this->comparator, $this->configuration);
     }
 
@@ -77,7 +74,7 @@ final class Sieve
         }
 
         return [
-            'matched' => count($matchedRanges) > 0,
+            'matched' => $matchedRanges !== [],
             'matched_ranges' => $matchedRanges,
             'normalized_ranges' => $normalizedRanges,
         ];

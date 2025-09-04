@@ -38,8 +38,11 @@ final readonly class VersionConstraint
      */
     public function allowsPrereleases(): bool
     {
-        return $this->version->isPrerelease() ||
-               in_array($this->operator, ['>', '>='], true);
+        if ($this->version->isPrerelease()) {
+            return true;
+        }
+
+        return in_array($this->operator, ['>', '>='], true);
     }
 
     /**

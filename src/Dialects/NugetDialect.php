@@ -18,7 +18,8 @@ final class NugetDialect implements DialectInterface
     public function __construct(
         private readonly VersionParser $versionParser = new VersionParser(),
         private readonly RangeParser $rangeParser = new RangeParser(new VersionParser()),
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $options

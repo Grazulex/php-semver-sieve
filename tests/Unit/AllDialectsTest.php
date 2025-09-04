@@ -12,8 +12,8 @@ use Grazulex\SemverSieve\Dialects\PypiDialect;
 use Grazulex\SemverSieve\Dialects\RubyGemsDialect;
 use Grazulex\SemverSieve\Sieve;
 
-describe('All Dialects Implementation', function () {
-    it('can instantiate all 8 dialects', function () {
+describe('All Dialects Implementation', function (): void {
+    it('can instantiate all 8 dialects', function (): void {
         $dialects = [
             'generic' => new GenericSemverDialect(),
             'composer' => new ComposerDialect(),
@@ -26,13 +26,13 @@ describe('All Dialects Implementation', function () {
         ];
 
         expect($dialects)->toHaveCount(8);
-        
-        foreach ($dialects as $name => $dialect) {
+
+        foreach ($dialects as $dialect) {
             expect($dialect)->toBeInstanceOf(Grazulex\SemverSieve\Contracts\DialectInterface::class);
         }
     });
 
-    it('can create Sieve with all dialects', function () {
+    it('can create Sieve with all dialects', function (): void {
         $dialects = [
             new GenericSemverDialect(),
             new ComposerDialect(),
@@ -50,7 +50,7 @@ describe('All Dialects Implementation', function () {
         }
     });
 
-    it('can parse basic versions with each dialect', function () {
+    it('can parse basic versions with each dialect', function (): void {
         $tests = [
             [new GenericSemverDialect(), '1.2.3'],
             [new ComposerDialect(), '1.2.3'],
@@ -68,7 +68,7 @@ describe('All Dialects Implementation', function () {
         }
     });
 
-    it('can parse basic ranges with each dialect', function () {
+    it('can parse basic ranges with each dialect', function (): void {
         $tests = [
             [new GenericSemverDialect(), '1.2.3'],
             [new ComposerDialect(), '1.2.3'],

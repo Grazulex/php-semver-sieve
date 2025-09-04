@@ -35,7 +35,7 @@ final readonly class ParsedRange
      */
     public function hasConstraints(): bool
     {
-        return count($this->constraints) > 0;
+        return $this->constraints !== [];
     }
 
     /**
@@ -43,7 +43,7 @@ final readonly class ParsedRange
      */
     public function allowsPrereleases(): bool
     {
-        if (empty($this->constraints)) {
+        if ($this->constraints === []) {
             return false;
         }
 
@@ -90,7 +90,7 @@ final readonly class ParsedRange
      */
     public function toNormalizedString(): string
     {
-        if (empty($this->constraints)) {
+        if ($this->constraints === []) {
             return '*';
         }
 

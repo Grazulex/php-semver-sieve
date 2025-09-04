@@ -53,13 +53,13 @@ final class VersionParser implements ParserInterface
 
         // Parse prerelease identifiers
         $prerelease = [];
-        if (!empty($matches['prerelease'])) {
+        if (isset($matches['prerelease']) && ($matches['prerelease'] !== '' && $matches['prerelease'] !== '0')) {
             $prerelease = $this->parsePrereleaseIdentifiers($matches['prerelease'], $options);
         }
 
         // Parse build metadata
         $build = [];
-        if (!empty($matches['build'])) {
+        if (isset($matches['build']) && ($matches['build'] !== '' && $matches['build'] !== '0')) {
             $build = $this->parseBuildIdentifiers($matches['build']);
         }
 

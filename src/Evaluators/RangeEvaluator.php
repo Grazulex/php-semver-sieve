@@ -107,7 +107,7 @@ final class RangeEvaluator
     {
         $satisfying = $this->filterSatisfying($versions, $range);
 
-        if (empty($satisfying)) {
+        if ($satisfying === []) {
             return null;
         }
 
@@ -131,7 +131,7 @@ final class RangeEvaluator
     {
         $satisfying = $this->filterSatisfying($versions, $range);
 
-        if (empty($satisfying)) {
+        if ($satisfying === []) {
             return null;
         }
 
