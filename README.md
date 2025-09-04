@@ -1,14 +1,21 @@
-# 🔍 PHP SemVer Sieve
+# PHP SemVer Sieve
 
-[![Tests](https://github.com/Grazulex/php-semver-sieve/workflows/Tests/badge.svg)](https://github.com/Grazulex/php-semver-sieve/actions)
-[![PHPStan](https://github.com/Grazulex/php-semver-sieve/workflows/PHPStan/badge.svg)](https://github.com/Grazulex/php-semver-sieve/actions)
-[![Mutation Testing](https://github.com/Grazulex/php-semver-sieve/workflows/Mutation%20Testing/badge.svg)](https://github.com/Grazulex/php-semver-sieve/actions)
-[![Latest Stable Version](https://poser.pugx.org/grazulex/php-semver-sieve/v/stable)](https://packagist.org/packages/grazulex/php-semver-sieve)
-[![License](https://poser.pugx.org/grazulex/php-semver-sieve/license)](https://packagist.org/packages/grazulex/php-semver-sieve)
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Grazulex/php-semver-sieve/main/new_logo.png" alt="PHP SemVer Sieve" width="200">
+  
+  **Universal semantic version range checking across all major package managers - powerful, fast, and dependency-free PHP package.**
+  
+  *A comprehensive library for evaluating version constraints from Composer, npm, PyPI, RubyGems, Maven, NuGet, Go modules, and more with a single unified API.*
+
+[![Latest Version](https://img.shields.io/packagist/v/grazulex/php-semver-sieve.svg?style=flat-square)](https://packagist.org/packages/grazulex/php-semver-sieve) [![Total Downloads](https://img.shields.io/packagist/dt/grazulex/php-semver-sieve.svg?style=flat-square)](https://packagist.org/packages/grazulex/php-semver-sieve) [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/Grazulex/php-semver-sieve/blob/main/LICENSE.md) [![PHP Version](https://img.shields.io/badge/php-8.2%2B-blue.svg?style=flat-square)](https://php.net/) [![Tests](https://img.shields.io/github/actions/workflow/status/grazulex/php-semver-sieve/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/grazulex/php-semver-sieve/actions) [![Static Analysis](https://img.shields.io/github/actions/workflow/status/grazulex/php-semver-sieve/static-analysis.yml?branch=main&label=phpstan&style=flat-square)](https://github.com/grazulex/php-semver-sieve/actions) [![Mutation Testing](https://img.shields.io/github/actions/workflow/status/grazulex/php-semver-sieve/mutation.yml?branch=main&label=mutation&style=flat-square)](https://github.com/grazulex/php-semver-sieve/actions)
+
+</div>
+
+## 🚀 Overview
 
 A **powerful, universal PHP package** for checking if version strings match version ranges across **all major package managers**. 
 
-> 🎯 **One API to rule them all** - Handle version constraints from Composer, npm, PyPI, RubyGems, Maven, NuGet, Go modules, and more! 
+> 🎯 **One API to rule them all** - Handle version constraints from Composer, npm, PyPI, RubyGems, Maven, NuGet, Go modules, and more!
 
 ## ✨ Features
 
