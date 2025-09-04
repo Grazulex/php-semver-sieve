@@ -1,8 +1,8 @@
 {
     "name": "grazulex/php-semver-sieve",
     "description": "A pure PHP package for checking if a version string is included in one or more version ranges. Supports SemVer 2.0.0 and multiple version dialects (Composer, npm, PyPI, etc.)",
-    "type": "library",
     "license": "MIT",
+    "type": "library",
     "keywords": [
         "semver",
         "version",
@@ -23,13 +23,15 @@
         "php": "^8.2"
     },
     "require-dev": {
+        "ergebnis/composer-normalize": "^2.42",
+        "friendsofphp/php-cs-fixer": "^3.59",
+        "infection/infection": "^0.28",
         "pestphp/pest": "^2.34",
         "phpstan/phpstan": "^1.10",
-        "friendsofphp/php-cs-fixer": "^3.59",
-        "rector/rector": "^1.1",
-        "infection/infection": "^0.28",
-        "ergebnis/composer-normalize": "^2.42"
+        "rector/rector": "^1.1"
     },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Grazulex\\SemverSieve\\": "src/"
@@ -40,34 +42,32 @@
             "Grazulex\\SemverSieve\\Tests\\": "tests/"
         }
     },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "infection/extension-installer": true,
+            "pestphp/pest-plugin": true
+        },
+        "sort-packages": true
+    },
     "scripts": {
-        "test": "pest",
-        "test-coverage": "pest --coverage",
-        "stan": "phpstan analyse",
-        "cs-fix": "php-cs-fixer fix",
+        "ci": [
+            "@composer normalize --dry-run",
+            "@quality",
+            "@infection"
+        ],
         "cs-check": "php-cs-fixer fix --dry-run --diff",
-        "rector": "rector",
-        "rector-dry": "rector --dry-run",
+        "cs-fix": "php-cs-fixer fix",
         "infection": "infection",
         "quality": [
             "@cs-check",
             "@stan",
             "@test"
         ],
-        "ci": [
-            "@composer normalize --dry-run",
-            "@quality",
-            "@infection"
-        ]
-    },
-    "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "pestphp/pest-plugin": true,
-            "infection/extension-installer": true,
-            "ergebnis/composer-normalize": true
-        }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+        "rector": "rector",
+        "rector-dry": "rector --dry-run",
+        "stan": "phpstan analyse",
+        "test": "pest",
+        "test-coverage": "pest --coverage"
+    }
 }
