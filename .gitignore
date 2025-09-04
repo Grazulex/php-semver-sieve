@@ -1,0 +1,45 @@
+# Dependencies
+/vendor/
+composer.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/build/
+.phpunit.cache/
+.php-cs-fixer.cache
+
+# Coverage
+.coverage
+coverage.xml
+clover.xml
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.temp/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# PHPStan
+phpstan-baseline.neon
+
+# Infection
+infection.json
+
+# Rector
+rector-cache/

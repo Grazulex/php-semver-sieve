@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'source' => [
+        'directories' => [
+            'src',
+        ],
+    ],
+    'logs' => [
+        'text' => 'build/infection.log',
+        'summary' => 'build/summary.log',
+        'json' => 'build/infection.json',
+        'github' => true,
+    ],
+    'tmpDir' => 'build/infection',
+    'phpUnit' => [
+        'configDir' => '.',
+    ],
+    'mutators' => [
+        '@default' => true,
+        '@function_signature' => false,
+        'MBString' => false,
+    ],
+    'minMsi' => 80,
+    'minCoveredMsi' => 90,
+    'threads' => 4,
+    'bootstrap' => 'vendor/autoload.php',
+    'testFramework' => 'phpunit',
+    'ignoreMsiWithNoMutations' => true,
+    'onlyFileExtensions' => ['php'],
+];

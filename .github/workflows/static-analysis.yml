@@ -1,0 +1,74 @@
+name: Static Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    name: PHPStan
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+        coverage: none
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction
+
+    - name: Run PHPStan
+      run: composer stan
+
+  code-style:
+    runs-on: ubuntu-latest
+    name: Code Style
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+        coverage: none
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction
+
+    - name: Check code style
+      run: composer cs-check
+
+    - name: Check composer.json normalization
+      run: composer normalize --dry-run
+
+  rector:
+    runs-on: ubuntu-latest
+    name: Rector
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+        coverage: none
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction
+
+    - name: Run Rector
+      run: composer rector-dry

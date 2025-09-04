@@ -1,0 +1,41 @@
+name: Mutation Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  infection:
+    runs-on: ubuntu-latest
+    name: Infection
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.1
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+        coverage: xdebug
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction
+
+    - name: Run tests with coverage
+      run: composer test-coverage
+
+    - name: Run Infection
+      run: composer infection
+      env:
+        INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
+
+    - name: Upload Mutation Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: infection-results
+        path: build/

@@ -1,0 +1,13 @@
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    
+    # Treat PHPDoc types as uncertain to avoid "always true" false positives
+    treatPhpDocTypesAsCertain: false
+    
+    # Ignore patterns for test files
+    ignoreErrors:
+        # Pest specific - ignore $this usage in test files
+        - '#Undefined variable: \$this#'
