@@ -282,7 +282,7 @@ final class RangeParser implements ParserInterface
         // Split on spaces and filter empty parts
         $parts = array_filter(array_map('trim', preg_split('/\s+/', $input)));
 
-        if (empty($parts)) {
+        if ($parts === []) {
             throw InvalidRangeException::forRange($input, 'No valid constraints found');
         }
 

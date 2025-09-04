@@ -39,7 +39,7 @@ final readonly class ParsedVersion
      */
     public function isPrerelease(): bool
     {
-        return count($this->prerelease) > 0;
+        return $this->prerelease !== [];
     }
 
     /**
@@ -47,7 +47,7 @@ final readonly class ParsedVersion
      */
     public function hasBuildMetadata(): bool
     {
-        return count($this->build) > 0;
+        return $this->build !== [];
     }
 
     /**

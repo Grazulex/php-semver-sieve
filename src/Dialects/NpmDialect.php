@@ -10,10 +10,11 @@ use Grazulex\SemverSieve\Parsers\VersionParser;
 use Grazulex\SemverSieve\ValueObjects\ParsedRange;
 use Grazulex\SemverSieve\ValueObjects\ParsedVersion;
 use Grazulex\SemverSieve\ValueObjects\VersionConstraint;
+use InvalidArgumentException;
 
 /**
  * NPM-specific dialect implementation.
- * 
+ *
  * Handles NPM's version and range syntax including:
  * - Special tags: latest, next, alpha, beta, rc, canary
  * - Extended range syntax: 1.2.3-alpha.1
@@ -37,7 +38,8 @@ final class NpmDialect implements DialectInterface
     public function __construct(
         private readonly VersionParser $versionParser = new VersionParser(),
         private readonly RangeParser $rangeParser = new RangeParser(new VersionParser()),
-    ) {}
+    ) {
+    }
 
     /**
      * Parse a version string using NPM conventions.
@@ -47,12 +49,12 @@ final class NpmDialect implements DialectInterface
     public function parseVersion(string $version, array $options = []): ParsedVersion
     {
         $version = trim($version);
-        
+
         // Handle special NPM tags
         if (in_array($version, self::SPECIAL_TAGS, true)) {
             return $this->parseSpecialTag($version);
         }
-        
+
         // Use base version parser with NPM-specific options
         $npmOptions = array_merge($options, [
             'allow_v_prefix' => true,
@@ -60,7 +62,7 @@ final class NpmDialect implements DialectInterface
             'case_insensitive' => true,
             'include_prereleases' => true, // NPM includes prereleases by default
         ]);
-        
+
         return $this->versionParser->parse($version, $npmOptions);
     }
 
@@ -72,7 +74,7 @@ final class NpmDialect implements DialectInterface
     public function parseRange(string $range, array $options = []): ParsedRange
     {
         $range = trim($range);
-        
+
         if ($range === '') {
             return ParsedRange::any();
         }
@@ -114,7 +116,7 @@ final class NpmDialect implements DialectInterface
             'experimental' => new ParsedVersion(0, 0, 0, ['experimental', '999999'], [], $tag),
             'dev' => new ParsedVersion(0, 0, 0, ['dev', '999999'], [], $tag),
             'nightly' => new ParsedVersion(0, 0, 0, ['nightly', '999999'], [], $tag),
-            default => throw new \InvalidArgumentException("Unknown NPM tag: {$tag}"),
+            default => throw new InvalidArgumentException("Unknown NPM tag: {$tag}"),
         };
     }
 
@@ -126,12 +128,12 @@ final class NpmDialect implements DialectInterface
     private function parseWorkspaceRange(string $range, array $options): ParsedRange
     {
         $workspacePart = substr($range, 10); // Remove 'workspace:'
-        
+
         if ($workspacePart === '*') {
             // workspace:* means any version in workspace
             return ParsedRange::any();
         }
-        
+
         // workspace:^ or workspace:~ - parse the inner range
         return $this->rangeParser->parse($workspacePart, $options);
     }
@@ -144,42 +146,43 @@ final class NpmDialect implements DialectInterface
     private function parseXRange(string $range, array $options): ParsedRange
     {
         $range = strtolower($range);
-        
+
         if ($range === 'x' || $range === '*') {
             return ParsedRange::any();
         }
-        
+
         // Handle partial X-ranges like 1.2.x or 1.x
         $parts = explode('.', $range);
-        $constraints = [];
-        
+
         // Find the first X
         $xIndex = -1;
-        for ($i = 0; $i < count($parts); $i++) {
+        $counter = count($parts);
+        for ($i = 0; $i < $counter; $i++) {
             if ($parts[$i] === 'x') {
                 $xIndex = $i;
+
                 break;
             }
         }
-        
+
         if ($xIndex === -1) {
             // No X found, parse normally
             return $this->rangeParser->parse($range, $options);
         }
-        
+
         // Build range based on X position
         if ($xIndex === 0) {
             // x.y.z or x - any version
             return ParsedRange::any();
         }
-        
+
         // Build lower bound
         $lowerParts = array_slice($parts, 0, $xIndex);
         while (count($lowerParts) < 3) {
             $lowerParts[] = '0';
         }
         $lowerVersion = implode('.', $lowerParts);
-        
+
         // Build upper bound
         $upperParts = array_slice($parts, 0, $xIndex);
         $lastIndex = count($upperParts) - 1;
@@ -188,10 +191,10 @@ final class NpmDialect implements DialectInterface
             $upperParts[] = '0';
         }
         $upperVersion = implode('.', $upperParts);
-        
+
         $lower = $this->versionParser->parse($lowerVersion, $options);
         $upper = $this->versionParser->parse($upperVersion, $options);
-        
+
         return new ParsedRange([
             new VersionConstraint('>=', $lower),
             new VersionConstraint('<', $upper),
@@ -216,16 +219,16 @@ final class NpmDialect implements DialectInterface
         return [
             // Standard semver operators
             '=', '!=', '>', '>=', '<', '<=',
-            
+
             // NPM-specific operators
             '^', '~',
-            
+
             // Range operators
             '||', ' ',
-            
+
             // Workspace protocol
             'workspace:',
-            
+
             // X-ranges
             'x', 'X', '*',
         ];

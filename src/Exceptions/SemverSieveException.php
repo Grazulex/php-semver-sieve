@@ -57,7 +57,7 @@ abstract class SemverSieveException extends Exception
     {
         $message = $this->getMessage();
 
-        if (!empty($this->context)) {
+        if ($this->context !== []) {
             $contextString = $this->formatContext();
             $message .= " Context: {$contextString}";
         }

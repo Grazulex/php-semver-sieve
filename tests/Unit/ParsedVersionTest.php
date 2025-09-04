@@ -43,7 +43,7 @@ describe('ParsedVersion', function (): void {
     });
 
     it('should reject negative version numbers', function (): void {
-        expect(fn () => new ParsedVersion(-1, 0, 0))
+        expect(fn (): \Grazulex\SemverSieve\ValueObjects\ParsedVersion => new ParsedVersion(-1, 0, 0))
             ->toThrow(InvalidArgumentException::class, 'Version numbers cannot be negative');
     });
 

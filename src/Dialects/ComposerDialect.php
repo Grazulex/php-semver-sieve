@@ -113,18 +113,18 @@ final class ComposerDialect implements DialectInterface
         $version = preg_replace('/@(stable|dev|alpha|beta|RC)$/i', '', $version);
 
         // Handle version aliases (e.g., "dev-master as 1.0.x-dev")
-        if (str_contains($version, ' as ')) {
-            [$actual, $alias] = explode(' as ', $version, 2);
+        if (str_contains((string) $version, ' as ')) {
+            [$actual, $alias] = explode(' as ', (string) $version, 2);
             $version = trim($alias);
         }
 
         // Handle dev branches (e.g., "dev-feature-branch")
-        if (str_starts_with($version, 'dev-')) {
+        if (str_starts_with((string) $version, 'dev-')) {
             // Convert to a high version for comparison purposes
             $version = '999999.999999.999999-dev';
         }
 
-        return trim($version);
+        return trim((string) $version);
     }
 
     /**
@@ -143,6 +143,6 @@ final class ComposerDialect implements DialectInterface
         // Handle inline aliases
         $range = preg_replace('/\s+as\s+[^\s,|]+/', '', $range);
 
-        return trim($range);
+        return trim((string) $range);
     }
 }

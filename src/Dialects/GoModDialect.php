@@ -9,6 +9,7 @@ use Grazulex\SemverSieve\Parsers\RangeParser;
 use Grazulex\SemverSieve\Parsers\VersionParser;
 use Grazulex\SemverSieve\ValueObjects\ParsedRange;
 use Grazulex\SemverSieve\ValueObjects\ParsedVersion;
+use InvalidArgumentException;
 
 /**
  * Go Modules dialect implementation.
@@ -18,7 +19,8 @@ final class GoModDialect implements DialectInterface
     public function __construct(
         private readonly VersionParser $versionParser = new VersionParser(),
         private readonly RangeParser $rangeParser = new RangeParser(new VersionParser()),
-    ) {}
+    ) {
+    }
 
     /**
      * @param array<string, mixed> $options
@@ -27,9 +29,9 @@ final class GoModDialect implements DialectInterface
     {
         // Go modules require 'v' prefix
         if (!str_starts_with($version, 'v')) {
-            throw new \InvalidArgumentException("Go module version must start with 'v': {$version}");
+            throw new InvalidArgumentException("Go module version must start with 'v': {$version}");
         }
-        
+
         return $this->versionParser->parse($version, $options);
     }
 

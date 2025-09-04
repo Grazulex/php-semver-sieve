@@ -10,10 +10,11 @@ use Grazulex\SemverSieve\Parsers\VersionParser;
 use Grazulex\SemverSieve\ValueObjects\ParsedRange;
 use Grazulex\SemverSieve\ValueObjects\ParsedVersion;
 use Grazulex\SemverSieve\ValueObjects\VersionConstraint;
+use InvalidArgumentException;
 
 /**
  * Maven (Java) dialect implementation.
- * 
+ *
  * Handles Maven version and range syntax including:
  * - Qualifiers: 1.0-SNAPSHOT, 1.0-RELEASE, 1.0-alpha-1
  * - Version ranges: [1.0,2.0), (1.0,2.0], [1.0,2.0]
@@ -42,7 +43,8 @@ final class MavenDialect implements DialectInterface
 
     public function __construct(
         private readonly RangeParser $rangeParser = new RangeParser(new VersionParser()),
-    ) {}
+    ) {
+    }
 
     /**
      * Parse a version string using Maven conventions.
@@ -51,43 +53,44 @@ final class MavenDialect implements DialectInterface
     {
         $version = trim($version);
         $originalVersion = $version;
-        
+
         // Maven version parsing is quite complex
         // Examples: 1.0, 1.0-SNAPSHOT, 1.0-alpha-1, 1.2.3-beta-4
-        
+
         // Split on the first dash to separate version from qualifier
         $parts = explode('-', $version, 2);
         $versionPart = $parts[0];
         $qualifierPart = $parts[1] ?? '';
-        
+
         // Parse numeric version segments
         $segments = explode('.', $versionPart);
-        
-        if (empty($segments) || !is_numeric($segments[0])) {
-            throw new \InvalidArgumentException("Invalid Maven version format: {$originalVersion}");
+
+        if (!is_numeric($segments[0])) {
+            throw new InvalidArgumentException("Invalid Maven version format: {$originalVersion}");
         }
-        
+
         $major = (int) $segments[0];
         $minor = isset($segments[1]) && is_numeric($segments[1]) ? (int) $segments[1] : 0;
         $patch = isset($segments[2]) && is_numeric($segments[2]) ? (int) $segments[2] : 0;
-        
+
         // Store additional segments in build metadata
         $build = [];
         if (count($segments) > 3) {
             $build[] = 'segments';
-            for ($i = 3; $i < count($segments); $i++) {
+            $counter = count($segments);
+            for ($i = 3; $i < $counter; $i++) {
                 if (is_numeric($segments[$i])) {
                     $build[] = $segments[$i];
                 }
             }
         }
-        
+
         // Parse qualifier
         $prerelease = [];
         if ($qualifierPart !== '') {
             $prerelease = $this->parseQualifier($qualifierPart);
         }
-        
+
         return new ParsedVersion($major, $minor, $patch, $prerelease, $build, $originalVersion);
     }
 
@@ -97,13 +100,13 @@ final class MavenDialect implements DialectInterface
     public function parseRange(string $range, array $options = []): ParsedRange
     {
         $range = trim($range);
-        
+
         if ($range === '') {
             return ParsedRange::any();
         }
 
         // Handle Maven range notation [1.0,2.0), (1.0,2.0], etc.
-        if ((str_starts_with($range, '[') || str_starts_with($range, '(')) && 
+        if ((str_starts_with($range, '[') || str_starts_with($range, '(')) &&
             (str_ends_with($range, ']') || str_ends_with($range, ')'))) {
             return $this->parseMavenRange($range, $options);
         }
@@ -124,10 +127,11 @@ final class MavenDialect implements DialectInterface
         // For simple version constraints, treat as exact match
         try {
             $version = $this->parseVersion($range, $mavenOptions);
+
             return new ParsedRange([
                 new VersionConstraint('=', $version),
             ], $range);
-        } catch (\InvalidArgumentException) {
+        } catch (InvalidArgumentException) {
             // Fall back to standard range parsing
             return $this->rangeParser->parse($range, $mavenOptions);
         }
@@ -142,39 +146,40 @@ final class MavenDialect implements DialectInterface
     {
         $startInclusive = str_starts_with($range, '[');
         $endInclusive = str_ends_with($range, ']');
-        
+
         // Remove brackets/parentheses
         $inner = substr($range, 1, -1);
-        
+
         // Handle single version in brackets [1.0] (exact match)
         if (!str_contains($inner, ',')) {
             $version = $this->parseVersion($inner, $options);
+
             return new ParsedRange([
                 new VersionConstraint('=', $version),
             ], $range);
         }
-        
+
         $parts = explode(',', $inner, 2);
-        
+
         if (count($parts) !== 2) {
-            throw new \InvalidArgumentException("Invalid Maven range notation: {$range}");
+            throw new InvalidArgumentException("Invalid Maven range notation: {$range}");
         }
-        
+
         $lowerVersion = trim($parts[0]);
         $upperVersion = trim($parts[1]);
-        
+
         $constraints = [];
-        
+
         if ($lowerVersion !== '') {
             $lower = $this->parseVersion($lowerVersion, $options);
             $constraints[] = new VersionConstraint($startInclusive ? '>=' : '>', $lower);
         }
-        
+
         if ($upperVersion !== '') {
             $upper = $this->parseVersion($upperVersion, $options);
             $constraints[] = new VersionConstraint($endInclusive ? '<=' : '<', $upper);
         }
-        
+
         return new ParsedRange($constraints, $range);
     }
 
@@ -187,7 +192,7 @@ final class MavenDialect implements DialectInterface
     {
         $versionPart = rtrim($range, '+');
         $version = $this->parseVersion($versionPart, $options);
-        
+
         // 1.0+ means >= 1.0
         return new ParsedRange([
             new VersionConstraint('>=', $version),
@@ -202,11 +207,11 @@ final class MavenDialect implements DialectInterface
     private function parseQualifier(string $qualifier): array
     {
         $qualifier = strtolower($qualifier);
-        
+
         // Handle compound qualifiers like "alpha-1", "beta-2"
         $parts = explode('-', $qualifier);
         $prerelease = [];
-        
+
         foreach ($parts as $part) {
             if (array_key_exists($part, self::QUALIFIER_ORDER)) {
                 // Map known qualifiers
@@ -220,7 +225,7 @@ final class MavenDialect implements DialectInterface
                 $prerelease[] = $part;
             }
         }
-        
+
         return $prerelease;
     }
 
@@ -242,10 +247,10 @@ final class MavenDialect implements DialectInterface
         return [
             // Range notation
             '[', ']', '(', ')', ',',
-            
+
             // Soft requirements
             '+',
-            
+
             // Standard comparison (rare in Maven)
             '=', '!=', '>', '>=', '<', '<=',
         ];
