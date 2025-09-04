@@ -18,7 +18,7 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: 8.2
+        php-version: 8.4
         extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
         coverage: xdebug
 
@@ -34,7 +34,7 @@ jobs:
         INFECTION_BADGE_API_KEY: ${{ secrets.INFECTION_BADGE_API_KEY }}
 
     - name: Upload Mutation Test Results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: infection-results
