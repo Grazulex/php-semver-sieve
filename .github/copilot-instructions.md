@@ -335,7 +335,7 @@ final readonly class SieveConfiguration
 ## Development Workflow
 
 ### Quality Assurance Tools
-- **PHP 8.1+ Required**: Modern PHP features (readonly properties, enums, etc.)
+- **PHP 8.2+ Required**: Modern PHP features (readonly classes, enums, etc.)
 - **PHPStan Level 9**: Maximum static analysis
 - **PHP-CS-Fixer**: Code style enforcement (PSR-12)
 - **Rector**: Automated refactoring and PHP version updates
@@ -346,7 +346,7 @@ final readonly class SieveConfiguration
 - **Pre-commit**: Run tests and static analysis
 - **Pre-push**: Full test suite
 - **GitHub Actions**: 
-  - Matrix testing (PHP 8.1, 8.2, 8.3, 8.4)
+  - Matrix testing (PHP 8.2, 8.3, 8.4)
   - Multiple OS (Ubuntu, Windows, macOS)
   - Code coverage reporting
   - Security analysis (Psalm, PHPStan)
