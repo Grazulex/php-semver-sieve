@@ -27,7 +27,7 @@ A **powerful, universal PHP package** for checking if version strings match vers
 - 🏛️ **SOLID Architecture** - Clean, extensible, maintainable codebase
 - 🧪 **Fully tested** - 42 tests, 126 assertions, mutation testing
 - 🔍 **Static analysis** - PHPStan level 6 compliant
-- ⚡ **PHP 8.1+** - Modern features (readonly properties, enums, match expressions)
+- ⚡ **PHP 8.2+** - Modern features (readonly classes, enums, match expressions)
 
 ## 📊 Project Stats
 
@@ -406,7 +406,7 @@ Each class has one clear purpose:
 - **Immutable objects** - Thread-safe, cacheable
 - **Lazy evaluation** - Parse only when needed
 - **Memory efficient** - Minimal object allocation
-- **Type safety** - PHP 8.1+ strict typing
+- **Type safety** - PHP 8.2+ strict typing
 
 ### Typical Performance
 ```php
@@ -599,7 +599,7 @@ We welcome contributions! Here's how to get started:
 - **PHPStan Level 6** compliance required
 - **100% test coverage** for new features
 - **SOLID principles** architecture
-- **PHP 8.1+** modern features encouraged
+- **PHP 8.2+** modern features encouraged
 
 ### 🧪 Adding New Dialects
 ```php
@@ -657,7 +657,7 @@ copies or substantial portions of the Software.
 - **Dependency Injection** - Testable, flexible architecture
 
 ### 🛠️ Tools & Technologies
-- **PHP 8.1+** - Modern PHP with latest features
+- **PHP 8.2+** - Modern PHP with latest features
 - **Pest** - Elegant PHP testing framework
 - **PHPStan** - Static analysis for type safety
 - **Infection** - Mutation testing for test quality
