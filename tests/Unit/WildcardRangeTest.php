@@ -114,7 +114,7 @@ describe('Wildcard Range Support', function (): void {
         it('should include prereleases when configured leniently', function (): void {
             $sieve = new Sieve(
                 new GenericSemverDialect(),
-                \Grazulex\SemverSieve\Configuration\SieveConfiguration::lenient()
+                \Grazulex\SemverSieve\Configuration\SieveConfiguration::lenient(),
             );
 
             // Prereleases 1.2.0-alpha is technically >= 1.2.0-0 (the lower bound)
