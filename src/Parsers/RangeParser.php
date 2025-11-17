@@ -251,7 +251,7 @@ final class RangeParser implements ParserInterface
         $version = $this->versionParser->parse($normalized, $options);
 
         // Determine range based on wildcard position
-        if (str_contains($input, '1.2.x') || str_contains($input, '1.2.*')) {
+        if (preg_match('/^\d+\.\d+\.x$|^\d+\.\d+\.\*$/', $input)) {
             // 1.2.x := >=1.2.0 <1.3.0-0
             $nextMinor = new ParsedVersion($version->major, $version->minor + 1, 0, ['0']);
             $constraints = [

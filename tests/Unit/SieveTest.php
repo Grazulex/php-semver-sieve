@@ -115,4 +115,81 @@ describe('Sieve Integration', function (): void {
                 ->toThrow(\Grazulex\SemverSieve\Exceptions\InvalidRangeException::class);
         });
     });
+
+    describe('wildcard ranges', function (): void {
+        it('should handle patch-level wildcards (X.Y.x format)', function (): void {
+            // 1.2.x should match 1.2.0 to 1.2.99 but not 1.3.0
+            expect($this->sieve->includes('1.2.0', ['1.2.x']))->toBeTrue();
+            expect($this->sieve->includes('1.2.5', ['1.2.x']))->toBeTrue();
+            expect($this->sieve->includes('1.2.99', ['1.2.x']))->toBeTrue();
+            expect($this->sieve->includes('1.3.0', ['1.2.x']))->toBeFalse();
+            expect($this->sieve->includes('1.1.9', ['1.2.x']))->toBeFalse();
+
+            // 1.3.x should work (this was the bug - only 1.2.x was hardcoded)
+            expect($this->sieve->includes('1.3.0', ['1.3.x']))->toBeTrue();
+            expect($this->sieve->includes('1.3.5', ['1.3.x']))->toBeTrue();
+            expect($this->sieve->includes('1.4.0', ['1.3.x']))->toBeFalse();
+
+            // Other versions should work too
+            expect($this->sieve->includes('2.0.0', ['2.0.x']))->toBeTrue();
+            expect($this->sieve->includes('2.0.5', ['2.0.x']))->toBeTrue();
+            expect($this->sieve->includes('2.1.0', ['2.0.x']))->toBeFalse();
+
+            expect($this->sieve->includes('10.20.0', ['10.20.x']))->toBeTrue();
+            expect($this->sieve->includes('10.20.99', ['10.20.x']))->toBeTrue();
+            expect($this->sieve->includes('10.21.0', ['10.20.x']))->toBeFalse();
+        });
+
+        it('should handle patch-level wildcards (X.Y.* format)', function (): void {
+            expect($this->sieve->includes('1.2.0', ['1.2.*']))->toBeTrue();
+            expect($this->sieve->includes('1.2.5', ['1.2.*']))->toBeTrue();
+            expect($this->sieve->includes('1.3.0', ['1.2.*']))->toBeFalse();
+
+            expect($this->sieve->includes('1.3.0', ['1.3.*']))->toBeTrue();
+            expect($this->sieve->includes('1.3.5', ['1.3.*']))->toBeTrue();
+            expect($this->sieve->includes('1.4.0', ['1.3.*']))->toBeFalse();
+        });
+
+        it('should handle minor-level wildcards (X.x format)', function (): void {
+            expect($this->sieve->includes('1.0.0', ['1.x']))->toBeTrue();
+            expect($this->sieve->includes('1.5.0', ['1.x']))->toBeTrue();
+            expect($this->sieve->includes('1.99.99', ['1.x']))->toBeTrue();
+            expect($this->sieve->includes('2.0.0', ['1.x']))->toBeFalse();
+
+            expect($this->sieve->includes('2.0.0', ['2.x']))->toBeTrue();
+            expect($this->sieve->includes('2.10.5', ['2.x']))->toBeTrue();
+            expect($this->sieve->includes('3.0.0', ['2.x']))->toBeFalse();
+        });
+
+        it('should handle minor-level wildcards (X.* format)', function (): void {
+            expect($this->sieve->includes('1.0.0', ['1.*']))->toBeTrue();
+            expect($this->sieve->includes('1.5.0', ['1.*']))->toBeTrue();
+            expect($this->sieve->includes('2.0.0', ['1.*']))->toBeFalse();
+        });
+
+        it('should handle global wildcard (*)', function (): void {
+            expect($this->sieve->includes('0.0.1', ['*']))->toBeTrue();
+            expect($this->sieve->includes('1.2.3', ['*']))->toBeTrue();
+            expect($this->sieve->includes('99.99.99', ['*']))->toBeTrue();
+        });
+
+        it('should handle wildcards with OR expressions', function (): void {
+            expect($this->sieve->includes('1.2.5', ['1.2.x || 2.0.x']))->toBeTrue();
+            expect($this->sieve->includes('2.0.5', ['1.2.x || 2.0.x']))->toBeTrue();
+            expect($this->sieve->includes('1.3.0', ['1.2.x || 2.0.x']))->toBeFalse();
+        });
+
+        it('should parse wildcard ranges correctly', function (): void {
+            $patchRange = $this->sieve->parseRange('1.2.x');
+            expect($patchRange->hasConstraints())->toBeTrue();
+            expect($patchRange->getConstraints())->toHaveCount(2);
+
+            $minorRange = $this->sieve->parseRange('1.x');
+            expect($minorRange->hasConstraints())->toBeTrue();
+            expect($minorRange->getConstraints())->toHaveCount(2);
+
+            $globalRange = $this->sieve->parseRange('*');
+            expect($globalRange->hasConstraints())->toBeFalse();
+        });
+    });
 });
